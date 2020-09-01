@@ -41,8 +41,8 @@ public class JpaMain {
                 System.out.println("member.name = " + member.getName());
             }
 
-            //데이터 삭제
-            //em.remove(findmember);
+            /*데이터 삭제
+            em.remove(findmember);*/
 
             //데이터 수정
             Member findmember = em.find(Member.class, 1L);
