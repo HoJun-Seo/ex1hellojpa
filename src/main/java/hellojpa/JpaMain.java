@@ -31,7 +31,7 @@ public class JpaMain {
             System.out.println("findMember.name = " + findmember.getName());*/
 
             // JPQL 을 통한 조건 탐색
-            List<Member> result = em.createQuery("select m from Member as m", Member.class)
+            /*List<Member> result = em.createQuery("select m from Member as m", Member.class)
                     .setFirstResult(5)
                     .setMaxResults(8)
                     .getResultList();
@@ -39,20 +39,28 @@ public class JpaMain {
             // 테이블을 대상으로 쿼리가 작성될 경우 객체 지향의 사상이 깨어진다.
             for (Member member : result){
                 System.out.println("member.name = " + member.getName());
-            }
+            }*/
 
-            /*데이터 삭제
-            em.remove(findmember);*/
+            //데이터 삭제
+            //em.remove(findmember);
 
             //데이터 수정
-            Member findmember = em.find(Member.class, 1L);
+            /*Member findmember = em.find(Member.class, 1L);
             // findmember.setId(3L); // 아이디 값은 변경되지 않는다. 왜?
-            findmember.setName("HelloJPA");
+            findmember.setName("HelloJPA");*/
 
             //em.persist(findmember); // 데이터 수정의 경우 persist 를 하지 않아도 된다.
             //JPA 를 통해서 entity 를 가져오면 JPA가 관리를 해준다.
             //JPA 가 데이터가 변경되었는지 그렇지 않은지 트랜잭션이 커밋되는 시점에 체크를 한다.
             //변경점이 있을 경우 update query 를 만들어서 날려준다. 이후 트랜잭션이 커밋 된다.
+
+            //비영속
+            Member member = new Member();
+            member.setId(100L);
+            member.setName("HelloJPA");
+
+            em.persist(member); // 영속
+            em.detach(member); // 준영속
             tx.commit();
         } catch (Exception e){
             tx.rollback();
