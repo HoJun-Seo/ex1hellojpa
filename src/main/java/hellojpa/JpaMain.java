@@ -55,13 +55,28 @@ public class JpaMain {
             //변경점이 있을 경우 update query 를 만들어서 날려준다. 이후 트랜잭션이 커밋 된다.
 
             //비영속
-            Member member = new Member();
-            member.setId(100L);
-            member.setName("HelloJPA");
+            /*Member member = new Member();
+            member.setId(101L);
+            member.setName("HelloJPA");*/
 
-            em.persist(member); // 영속
-            em.detach(member); // 준영속
-            tx.commit();
+            //em.persist(member); // 영속
+            //em.detach(member); // 준영속
+
+            //Member findMemeber1 = em.find(Member.class, 101L); // SELECT query 실행
+            //Member findMemeber2 = em.find(Member.class, 101L); // 같은 데이터를 찾는 경우이기 때문에 1차캐시 에서 데이터를 가져오게 된다.(SELECT query 실행되지 않음)
+            //System.out.println("findMemeber.id = " + findMemeber1.getId());
+            //System.out.println("findMemeber.name = " + findMemeber2.getName());
+            //System.out.println("result = " + (findMemeber1 == findMemeber2));
+
+            Member member1 = new Member(150L, "A");
+            Member member2 = new Member(160L, "B");
+
+            em.persist(member1);
+            em.persist(member2); // persist 하는 순간 데이터베이스에 저장되는 것이 아니라 영속성 컨텍스트에 차곡차곡 entity 와 쿼리가 쌓이게 된다.
+
+            System.out.println("=============================");
+
+            tx.commit(); // 커밋하는 시점에 진짜 데이터베이스에 쿼리가 전달된다.
         } catch (Exception e){
             tx.rollback();
         } finally {
