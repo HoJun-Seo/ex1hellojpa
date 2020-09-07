@@ -4,7 +4,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-import java.util.List;
 
 public class JpaMain {
     public static void main(String[] args) {
@@ -68,13 +67,33 @@ public class JpaMain {
             //System.out.println("findMemeber.name = " + findMemeber2.getName());
             //System.out.println("result = " + (findMemeber1 == findMemeber2));
 
+            /* 영속성 컨텍스트 : 버퍼링을 통한 쓰기 지연의 예시
             Member member1 = new Member(150L, "A");
             Member member2 = new Member(160L, "B");
 
             em.persist(member1);
             em.persist(member2); // persist 하는 순간 데이터베이스에 저장되는 것이 아니라 영속성 컨텍스트에 차곡차곡 entity 와 쿼리가 쌓이게 된다.
 
-            System.out.println("=============================");
+            System.out.println("=============================");*/
+
+            // 엔티티 수정(변경 감지)
+            //Member member = em.find(Member.class, 150L);
+            //member.setName("ZZZZ");
+            // em.persist(member) -> 데이터 수정시에 persist 를 활용할 필요 없다.
+            // persist() 메소드를 날리지 않아도 1차캐시에 있는 스냅샷을 통한 비교 결과 변경점이 있을 경우 update query 가 데이터베이스로 전달되게 된다.
+
+            /* flush() 직접 호출
+            Member member = new Member(200L, "member200");
+            em.persist(member);
+            em.flush(); // 강제 호출*/
+
+            // 준영속 상태로 만들기
+            Member member = em.find(Member.class, 150L); // 영속성 컨텍스트에 값을 올림
+            member.setName("AAAA"); // Dirty Checking 을 통한 변경
+            
+            em.detach(member); // 영속성 컨텍스트에서 빼버림으로서 준영속 상태로 전환
+            // JPA 가 더 이상 해당 객체를 관리하지 않음
+            // 커밋을 해도 update query 가 나오지 않는다.(즉, 데이터의 변경이 일어나지 않는다.)
 
             tx.commit(); // 커밋하는 시점에 진짜 데이터베이스에 쿼리가 전달된다.
         } catch (Exception e){
