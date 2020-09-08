@@ -3,7 +3,7 @@ package hellojpa;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-@Entity
+@Entity // JPA 가 관리하는 클래스임을 알리는 어노테이션
 public class Member {
 
     @Id
