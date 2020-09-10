@@ -88,10 +88,10 @@ public class JpaMain {
             em.flush(); // 강제 호출*/
 
             // 준영속 상태로 만들기
-            Member member = em.find(Member.class, 150L); // 영속성 컨텍스트에 값을 올림
-            member.setName("AAAA"); // Dirty Checking 을 통한 변경
+            //Member member = em.find(Member.class, 150L); // 영속성 컨텍스트에 값을 올림
+            //member.setName("AAAA"); // Dirty Checking 을 통한 변경
 
-            em.detach(member); // 영속성 컨텍스트에서 빼버림으로서 준영속 상태로 전환
+            //em.detach(member); // 영속성 컨텍스트에서 빼버림으로서 준영속 상태로 전환
             // JPA 가 더 이상 해당 객체를 관리하지 않음
             // 커밋을 해도 update query 가 나오지 않는다.(즉, 데이터의 변경이 일어나지 않는다.)
 

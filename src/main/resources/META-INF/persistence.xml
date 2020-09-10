@@ -19,7 +19,7 @@
             <!-- 쿼리 출력 시 주석(comments)도 함께 출력 -->
             <property name="hibernate.use_sql_comments" value="true"/>
             <property name="hibernate.jdbc.batch_size" value="10"/>
-            <property name="hibernate.hbm2ddl.auto" value="create"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
 
 
         </properties>
