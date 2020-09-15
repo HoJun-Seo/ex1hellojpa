@@ -28,9 +28,12 @@ public class JpaMain {
             Member member3 = new Member();
             member3.setUsername("C");
 
+            // DB SEQ = 1 <- 첫 호출
+            // DB SEQ = 51 <- 두번째 호출
+
             em.persist(member1);
-            //em.persist(member2);
-            //em.persist(member3);
+            em.persist(member2);
+            em.persist(member3);
 
             System.out.println("member1.id = " + member1.getId());
             System.out.println("member2.id = " + member2.getId());
