@@ -30,7 +30,7 @@ public class JpaMain {
 
             // DB SEQ = 1 <- 첫 호출
             // DB SEQ = 51 <- 두번째 호출
-
+            // 두번째 호출이 끝나고 나면 allocationSize 에 해당하는 만큼 키 값의 갯수가 찰 때까지 시퀀스에 대한 호출이 이루어지지 않는다.
             em.persist(member1);
             em.persist(member2);
             em.persist(member3);
