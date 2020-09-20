@@ -1,6 +1,8 @@
 package hellojpa;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity // JPA 가 관리하는 클래스임을 알리는 어노테이션
 @SequenceGenerator(
@@ -20,9 +22,18 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private RoleType roleType;
 
+    @Lob
+    private String description;
+
+    @Transient
+    private Integer temp;
+
     public Member() { // JPA 는 기본적으로 내부적으로 reflection 같은것들을 쓰기 때문에 동적으로 객체를 생성해내야 한다.
         //그렇기 때문에 기본 생성자가 하나 있어야 한다
     }
+
+    private LocalDate testLocalDate;
+    private LocalDateTime testLocalDateTime;
 
 
     public Long getId() {
