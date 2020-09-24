@@ -19,25 +19,19 @@ public class JpaMain {
         tx.begin(); // 데이터베이스 트랜잭션 시작
         try{ // 오류가 발생했을 때를 대비하기 위해 try - catch 문을 사용한다.
 
-            Member member1 = new Member();
-            member1.setUsername("A");
+            Team team = new Team();
+            team.setName("TeamA");
+            em.persist(team); // 영속성 컨텍스트에 올라갈때 항상 기본 키가 같이 매핑된다.
 
-            Member member2 = new Member();
-            member2.setUsername("B");
+            Member member = new Member();
+            member.setUsername("member1");
+            member.setTeamId(team.getId()); // 객체지향 스러우려면 setTeam 이 되어야 하지 않을까?
+            em.persist(member);
 
-            Member member3 = new Member();
-            member3.setUsername("C");
+            Member findMember = em.find(Member.class, member.getId());
 
-            // DB SEQ = 1 <- 첫 호출
-            // DB SEQ = 51 <- 두번째 호출
-            // 두번째 호출이 끝나고 나면 allocationSize 에 해당하는 만큼 키 값의 갯수가 찰 때까지 시퀀스에 대한 호출이 이루어지지 않는다.
-            em.persist(member1);
-            em.persist(member2);
-            em.persist(member3);
-
-            System.out.println("member1.id = " + member1.getId());
-            System.out.println("member2.id = " + member2.getId());
-            System.out.println("member3.id = " + member3.getId());
+            Long findTeamId = findMember.getTeamId();
+            Team findTeam = em.find(Team.class, findTeamId);
 
             tx.commit(); // 커밋하는 시점에 진짜 데이터베이스에 쿼리가 전달된다.
         } catch (Exception e){
