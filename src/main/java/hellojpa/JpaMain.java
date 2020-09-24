@@ -25,13 +25,21 @@ public class JpaMain {
 
             Member member = new Member();
             member.setUsername("member1");
-            member.setTeamId(team.getId()); // 객체지향 스러우려면 setTeam 이 되어야 하지 않을까?
+            //member.setTeamId(team.getId()); // 객체지향 스러우려면 setTeam 이 되어야 하지 않을까?
+            member.setTeam(team); // 이렇게 해두면 JPA 가 알아서 team 에서 기본 키를 꺼낸 후 외래키 값에 의해 insert 할 때 외래키 값으로 사용한다.
             em.persist(member);
 
             Member findMember = em.find(Member.class, member.getId());
 
-            Long findTeamId = findMember.getTeamId();
-            Team findTeam = em.find(Team.class, findTeamId);
+            //Long findTeamId = findMember.getTeamId(); // 테이블 중심으로 설계하는 바람에 이번엔 팀 아이디를 찾으면서 또다시 기본키를 찾는 과정을 반복해야 한다.
+            //Team findTeam = em.find(Team.class, findTeamId); // 기본 키 값을 한 번 찾는 걸로 팀을 알아낼 수는 없을까?
+
+            Team findTeam = findMember.getTeam(); // 팀 데이터를 바로 꺼낼 수 있다.
+            System.out.println("findTeam = " + findTeam.getName());
+
+            // 팀을 바꾸고 싶다면?
+            //Team newTeam = em.find(Team.class, 100L); // 키값이 100 번에 해당하는 팀이 있다고 가정한다.
+            //findMember.setTeam(newTeam); // 찾아온 멤버 데이터의 팀을 변경해준다.(외래키가 업데이트 된다.)
 
             tx.commit(); // 커밋하는 시점에 진짜 데이터베이스에 쿼리가 전달된다.
         } catch (Exception e){
