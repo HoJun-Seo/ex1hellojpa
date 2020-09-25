@@ -1,9 +1,8 @@
 package hellojpa;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Team {
@@ -13,6 +12,20 @@ public class Team {
 	private Long id;
 
 	private String name;
+
+	// 일대다 매핑에서 어떤것과 연결되어 있는지를 알려준다.(반대편 도메인에서 참조값으로 사용하고 있는 변수명으로 지정해주어야 한다.)
+	@OneToMany(mappedBy = "team") // Member 에서는 JoinColumn 으로 알려줬는데 여기는 왜 다를까?
+	private List<Member> members = new ArrayList<>(); // 양방향 연관관계
+	// ArrayList 로 초기화 하는 이유? add 할 때 NullPointer 가 발생하지 않는다.(일종의 관례)
+
+
+	public List<Member> getMembers() {
+		return members;
+	}
+
+	public void setMembers(List<Member> members) {
+		this.members = members;
+	}
 
 	public Long getId() {
 		return id;
