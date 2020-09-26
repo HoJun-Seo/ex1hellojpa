@@ -53,4 +53,13 @@ public class Member {
     public void setTeamId(Long teamId) {
         this.teamId = teamId;
     }*/
+
+    /*@Override
+    public String toString() {
+        return "Member{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", team=" + team +
+                '}';
+    }*/
 }
