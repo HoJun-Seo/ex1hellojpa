@@ -26,6 +26,8 @@ public class Member {
 
     public void setTeam(Team team) {
         this.team = team;
+        //team.getMembers().add(this);
+        // 연관관계 관련 메소드에 이와 같이 역방향 삽입 코드를 작성해 줄 수 있다.
     }
 
     public Long getId() {
