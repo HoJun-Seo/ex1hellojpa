@@ -28,7 +28,7 @@ public class JpaMain {
             Member member = new Member();
             member.setUsername("member1");
             //member.setTeamId(team.getId()); // 객체지향 스러우려면 setTeam 이 되어야 하지 않을까?
-            //member.setTeam(team); // 이렇게 해두면 JPA 가 알아서 team 에서 기본 키를 꺼낸 후 외래키 값에 의해 insert 할 때 외래키 값으로 사용한다.
+            //member.setTeam(team); // 이렇게 해두면 JPA 가 알아서 team 에서 기본 키를 꺼낸 후 insert 할 때 외래키 값으로 사용한다.
             em.persist(member);
 
             // Entity 를 1차캐시가 아닌 DB 에서 가져오게끔 하기 위해 영속성 컨텍스트를 비워준다.
