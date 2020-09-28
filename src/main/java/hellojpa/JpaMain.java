@@ -77,7 +77,7 @@ public class JpaMain {
 
             Member member = new Member();
             member.setUsername("member1");
-            member.setTeam(team); // 연관관계로 연결된 데이터 간에는 반드시 연관관계의 주인 객체에 먼저 값을 삽입해준다.
+            member.setTeam(team);
             em.persist(member);
 
             team.getMembers().add(member); // getMembers 를 통해 1차 캐시에서 데이터를 찾아온 후 값을 삽입해준다.
