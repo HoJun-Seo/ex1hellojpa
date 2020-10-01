@@ -25,6 +25,10 @@ public class Member {
     @JoinColumn(name = "TEAM_ID") // team 참조값과 데이터베이스의 외래키(TEAM_ID) 가 매핑되어야 한다.(이러면 매핑 끝남)
     private Team team;*/
 
+    @OneToOne
+    @JoinColumn(name = "LOCKER_ID")
+    private Locker locker;
+
     /*public Team getTeam() {
         return team;
     }
