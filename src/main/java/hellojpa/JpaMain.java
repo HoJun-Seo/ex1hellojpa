@@ -19,16 +19,13 @@ public class JpaMain {
         tx.begin(); // 데이터베이스 트랜잭션 시작
         try{ // 오류가 발생했을 때를 대비하기 위해 try - catch 문을 사용한다.
 
-            Member member = new Member();
-            member.setUsername("member1");
+            Movie movie = new Movie();
+            movie.setDirector("aaaa");
+            movie.setActor("bbbb");
+            movie.setName("인터스텔라");
+            movie.setPrice(10000);
 
-            em.persist(member);
-
-            Team team = new Team();
-            team.setName("teamA");
-            team.getMembers().add(member);
-
-            em.persist(team);
+            em.persist(movie);
 
             tx.commit(); // 커밋하는 시점에 진짜 데이터베이스에 쿼리가 전달된다.
         } catch (Exception e){
