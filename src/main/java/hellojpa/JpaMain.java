@@ -27,6 +27,18 @@ public class JpaMain {
 
             em.persist(movie);
 
+            //상속 관계에서 조회의 경우
+            em.flush();
+            em.clear();
+
+            /*Movie findMovie = em.find(Movie.class, movie.getId());
+            System.out.println("findMovie = " + findMovie);*/
+
+            // 구현 클래스마다 테이블을 생성하는 전략을 사용할 경우 발생하는 문제점
+            Item item = em.find(Item.class, movie.getId());
+            System.out.println("Item = " + item);
+            // select 쿼리 호출 시 데이터를 찾기 위해 union 명령을 이용하여 모든 테이블을 전부 다 뒤져야 한다.
+
             tx.commit(); // 커밋하는 시점에 진짜 데이터베이스에 쿼리가 전달된다.
         } catch (Exception e){
             tx.rollback();

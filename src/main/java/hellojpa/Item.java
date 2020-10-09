@@ -3,8 +3,9 @@ package hellojpa;
 import javax.persistence.*;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED) // 조인 전략을 선택할 수 있다.
-public class Item {
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@DiscriminatorColumn
+public abstract class Item {
 
 	@Id @GeneratedValue
 	private Long id;
