@@ -4,6 +4,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import java.time.LocalDateTime;
 
 public class JpaMain {
     public static void main(String[] args) {
@@ -19,13 +20,19 @@ public class JpaMain {
         tx.begin(); // 데이터베이스 트랜잭션 시작
         try{ // 오류가 발생했을 때를 대비하기 위해 try - catch 문을 사용한다.
 
+            /*
             Movie movie = new Movie();
             movie.setDirector("aaaa");
             movie.setActor("bbbb");
             movie.setName("인터스텔라");
-            movie.setPrice(10000);
+            movie.setPrice(10000);*/
 
-            em.persist(movie);
+            Member member = new Member();
+            member.setUsername("user");
+            member.setCreatedBy("kim");
+            member.setCreatedDate(LocalDateTime.now());
+
+            em.persist(member);
 
             //상속 관계에서 조회의 경우
             em.flush();
@@ -35,8 +42,8 @@ public class JpaMain {
             System.out.println("findMovie = " + findMovie);*/
 
             // 구현 클래스마다 테이블을 생성하는 전략을 사용할 경우 발생하는 문제점
-            Item item = em.find(Item.class, movie.getId());
-            System.out.println("Item = " + item);
+            //Item item = em.find(Item.class, movie.getId());
+            //System.out.println("Item = " + item);
             // select 쿼리 호출 시 데이터를 찾기 위해 union 명령을 이용하여 모든 테이블을 전부 다 뒤져야 한다.
 
             tx.commit(); // 커밋하는 시점에 진짜 데이터베이스에 쿼리가 전달된다.

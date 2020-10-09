@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Member {
+public class Member extends BaseEntity{
 
     @Id @GeneratedValue
     @Column(name = "MEMBER_ID")
@@ -38,6 +38,14 @@ public class Member {
     // 다대다 연관관계 에서 연결 테이블을 엔티티로 승격시켜서 한계를 해결할 경우
     @OneToMany(mappedBy = "member")
     private List<MemberProduct> memberProducts = new ArrayList<>();
+
+    /*
+    private String createdBy;
+    private LocalDateTime createdDate;
+    private String lastModifiedBy;
+    private LocalDateTime lastModifiedDate;
+    // 만약 모든 클래스에 위와 같은 필드들이 있어야 한다면 어떻게 해야 할까?(일일히 복붙 하기 귀찮음)
+    // 속성만 부모 클래스에서 상속 받아보자.(Mapped SuperClass) */
 
     /*public Team getTeam() {
         return team;
