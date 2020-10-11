@@ -4,7 +4,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-import java.time.LocalDateTime;
 
 public class JpaMain {
     public static void main(String[] args) {
@@ -20,26 +19,29 @@ public class JpaMain {
         tx.begin(); // 데이터베이스 트랜잭션 시작
         try{ // 오류가 발생했을 때를 대비하기 위해 try - catch 문을 사용한다.
 
-            /*
+
             Movie movie = new Movie();
             movie.setDirector("aaaa");
             movie.setActor("bbbb");
             movie.setName("인터스텔라");
-            movie.setPrice(10000);*/
+            movie.setPrice(10000);
 
-            Member member = new Member();
+            // BaseEntity - MappedSuperClass
+            /*Member member = new Member();
             member.setUsername("user");
             member.setCreatedBy("kim");
-            member.setCreatedDate(LocalDateTime.now());
+            member.setCreatedDate(LocalDateTime.now());*/
 
-            em.persist(member);
+            //em.persist(member);
+
+            em.persist(movie);
 
             //상속 관계에서 조회의 경우
             em.flush();
             em.clear();
 
-            /*Movie findMovie = em.find(Movie.class, movie.getId());
-            System.out.println("findMovie = " + findMovie);*/
+            Item item = em.find(Item.class, movie.getId());
+            System.out.println("findMovie = " + item);
 
             // 구현 클래스마다 테이블을 생성하는 전략을 사용할 경우 발생하는 문제점
             //Item item = em.find(Item.class, movie.getId());
