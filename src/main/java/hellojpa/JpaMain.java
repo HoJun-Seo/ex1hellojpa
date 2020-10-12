@@ -19,34 +19,56 @@ public class JpaMain {
         tx.begin(); // 데이터베이스 트랜잭션 시작
         try{ // 오류가 발생했을 때를 대비하기 위해 try - catch 문을 사용한다.
 
+            /*
+            Member member = em.find(Member.class, 1L);
+            //printMemberAndTeam(member); // 비즈니스 로직상 member 와 team 을 같이 출력 해야하는 경우가 있는 경우?
 
-            Movie movie = new Movie();
-            movie.setDirector("aaaa");
-            movie.setActor("bbbb");
-            movie.setName("인터스텔라");
-            movie.setPrice(10000);
+            printMember(member); // 상황이 바뀌어서 member 만 출력하면 되는 경우? */
 
-            // BaseEntity - MappedSuperClass
-            /*Member member = new Member();
-            member.setUsername("user");
-            member.setCreatedBy("kim");
-            member.setCreatedDate(LocalDateTime.now());*/
+            Member member1 = new Member();
+            member1.setUsername("member1");
+            em.persist(member1);
 
-            //em.persist(member);
+            Member member2 = new Member();
+            member2.setUsername("member2");
+            em.persist(member2);
 
-            em.persist(movie);
-
-            //상속 관계에서 조회의 경우
             em.flush();
             em.clear();
 
-            Item item = em.find(Item.class, movie.getId());
-            System.out.println("findMovie = " + item);
+            //Member findMember = em.find(Member.class, member.getId());
+            /*
+            Member findMember = em.getReference(Member.class, member1.getId()); // getReference 를 통해 프록시 객체 생성
+            System.out.println("findMember = " + findMember.getClass()); // 프록시 객체임을 알려주는 출력문
+            System.out.println("findMember.id = " + findMember.getId()); // 이미 가지고 있는 데이터 이므로 SQL 이 출력되지 않는다.
+            System.out.println("findMember = " + findMember.getUsername());
+            // 프록시 객체를 통해 실제 클래스의 Entity 를 참조하여 데이터를 가져온다.*/
 
-            // 구현 클래스마다 테이블을 생성하는 전략을 사용할 경우 발생하는 문제점
-            //Item item = em.find(Item.class, movie.getId());
-            //System.out.println("Item = " + item);
-            // select 쿼리 호출 시 데이터를 찾기 위해 union 명령을 이용하여 모든 테이블을 전부 다 뒤져야 한다.
+            /* == 비교, instance of 비교
+            Member m1 = em.find(Member.class, member1.getId());
+            //Member m2 = em.find(Member.class, member2.getId());
+            Member m2 = em.getReference(Member.class, member2.getId());
+
+            //System.out.println("m1 == m2 : " + (m1.getClass() == m2.getClass())); // 클래스 타입 비교
+            System.out.println("m1 == m2 : " + (m1 instanceof Member));
+            System.out.println("m1 == m2 : " + (m2 instanceof Member));*/
+
+            // 영속성 컨텍스트에 찾는 Entity 가 이미 있는 경우
+            /*Member m1 = em.find(Member.class, member1.getId()); // 영속성 컨텍스트에 member1 객체의 데이터를 올려놓는다.
+            System.out.println("m1 = " + m1.getClass());
+
+            Member reference = em.getReference(Member.class, member1.getId());
+            System.out.println("reference = " + reference.getClass());
+
+            System.out.println("m1 == reference : " + (m1 == reference));*/
+
+            Member refMember = em.getReference(Member.class, member1.getId()); // 영속성 컨텍스트에 member1 객체의 데이터를 올려놓는다.
+            System.out.println("refMember = " + refMember.getClass());
+
+            Member findMember = em.getReference(Member.class, member1.getId());
+            System.out.println("reference = " + findMember.getClass());
+
+            System.out.println("m1 == reference : " + (refMember == findMember));
 
             tx.commit(); // 커밋하는 시점에 진짜 데이터베이스에 쿼리가 전달된다.
         } catch (Exception e){
@@ -59,4 +81,18 @@ public class JpaMain {
         // 실제 애플리케이션이 완전히 끝나면 entityManagerFactory 를 완전히 닫아줘야 한다.
         emf.close();
     }
+
+    /*
+    private static void printMember(Member member) {
+        System.out.println("member = " + member.getUsername());
+    }
+
+    private static void printMemberAndTeam(Member member) {
+        String username = member.getUsername();
+        System.out.println("username = " + username);
+
+        Team team = member.getTeam();
+        System.out.println("team = " + team.getName());
+    }*/
+
 }
