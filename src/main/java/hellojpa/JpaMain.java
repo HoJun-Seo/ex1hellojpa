@@ -1,5 +1,7 @@
 package hellojpa;
 
+import org.hibernate.Hibernate;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -62,17 +64,40 @@ public class JpaMain {
 
             System.out.println("m1 == reference : " + (m1 == reference));*/
 
+            /*
             Member refMember = em.getReference(Member.class, member1.getId()); // 영속성 컨텍스트에 member1 객체의 데이터를 올려놓는다.
             System.out.println("refMember = " + refMember.getClass());
 
-            Member findMember = em.getReference(Member.class, member1.getId());
-            System.out.println("reference = " + findMember.getClass());
+            Member findMember = em.find(Member.class, member1.getId());
+            System.out.println("findMember = " + findMember.getClass());
 
-            System.out.println("m1 == reference : " + (refMember == findMember));
+            System.out.println("refMember == findMember : " + (refMember == findMember));
+            // JPA 의 매커니즘 상 이미 프록시 객체가 생성되어 있으면 find 메소드를 통해 데이터를 가져와도
+            // == 비교에서 true 를 반환해야 하기 때문에 프록시 객체로 생성된다.*/
+
+            /* 준영속 상태가 된 프록시 객체를 초기화 하려고 하는 경우 발생하는 오류
+            Member refMember = em.getReference(Member.class, member1.getId());
+            System.out.println("refMember = " + refMember.getClass());
+
+            em.detach(refMember);
+            //em.close();
+
+            refMember.getUsername();// 프록시 객체가 실제로 사용되면서 초기화 된다.(영속성 컨텍스트를 통해 DB에 쿼리를 전달하게 된다.)
+             */
+
+            // 프록시 확인을 위한 메소드
+            Member refMember = em.getReference(Member.class, member1.getId());
+            System.out.println("refMember = " + refMember.getClass());
+
+            // EntityManagerFactory 클래스에서 지원하는 메소드이다.
+            //refMember.getUsername(); // 프록시 객체 초기화
+            Hibernate.initialize(refMember); // 프록시 강제 초기화
+            System.out.println("isLoaded = " + emf.getPersistenceUnitUtil().isLoaded(refMember));
 
             tx.commit(); // 커밋하는 시점에 진짜 데이터베이스에 쿼리가 전달된다.
         } catch (Exception e){
             tx.rollback();
+            e.printStackTrace();
         } finally {
             em.close(); // EntityManager 가 내부적으로 데이터베이스 컬렉션을 물고 동작하기 때문에 사용이 끝나면 꼭 닫아줘야 한다.
         }
