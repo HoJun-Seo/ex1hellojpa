@@ -1,7 +1,5 @@
 package hellojpa;
 
-import org.hibernate.Hibernate;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -27,16 +25,18 @@ public class JpaMain {
 
             printMember(member); // 상황이 바뀌어서 member 만 출력하면 되는 경우? */
 
+            /*
             Member member1 = new Member();
             member1.setUsername("member1");
-            em.persist(member1);
+            em.persist(member1);*/
 
+            /*
             Member member2 = new Member();
             member2.setUsername("member2");
             em.persist(member2);
 
             em.flush();
-            em.clear();
+            em.clear();*/
 
             //Member findMember = em.find(Member.class, member.getId());
             /*
@@ -86,6 +86,7 @@ public class JpaMain {
              */
 
             // 프록시 확인을 위한 메소드
+            /*
             Member refMember = em.getReference(Member.class, member1.getId());
             System.out.println("refMember = " + refMember.getClass());
 
@@ -93,7 +94,84 @@ public class JpaMain {
             //refMember.getUsername(); // 프록시 객체 초기화
             Hibernate.initialize(refMember); // 프록시 강제 초기화
             System.out.println("isLoaded = " + emf.getPersistenceUnitUtil().isLoaded(refMember));
+             */
 
+            // 지연 로딩 및 JPQL N + 1
+            // Member - Team 연관관계 에서 Team 객체 참조에 LAZY 속성을 부여함으로서 team 객체를 프록시 객체로 만들어주면
+            // find 와 같이 Member 객체를 찾을 때 프록시 객체로 지정된 team 클래스의 데이터를 제외하고 Member 클래스의 데이터에 대해서만
+            // DB에 select 쿼리를 전달하여 데이터를 가져오게 된다.
+            /*
+            Team team = new Team();
+            team.setName("teamA");
+            em.persist(team);
+
+            Team teamB = new Team();
+            teamB.setName("teamB");
+            em.persist(teamB);
+
+            Member member1 = new Member();
+            member1.setUsername("member1");
+            member1.setTeam(team);
+            em.persist(member1);
+
+            Member member2 = new Member();
+            member2.setUsername("member2");
+            member2.setTeam(teamB);
+            em.persist(member2);
+
+            em.flush();
+            em.clear();
+             */
+            /* 즉시 로딩
+            Member m = em.find(Member.class, member1.getId());
+
+            System.out.println("m = " + m.getTeam().getClass());
+
+            System.out.println("=================");
+            //m.getTeam().getName();
+            System.out.println("teamName = " + m.getTeam().getName());
+            System.out.println("=================");
+             */
+
+            // JPQL N + 1 문제
+            //List<Member> members = em.createQuery("select m from Member m", Member.class)
+              //      .getResultList();
+            
+            // JPQL Pathc Join(LAZY 설정에서 즉시 로딩)
+            // List<Member> members = em.createQuery("select m from Member m join fetch m.team", Member.class)
+            //                    .getResultList();
+
+
+            Child child1 = new Child();
+            Child child2 = new Child();
+
+            Parent parent = new Parent();
+            parent.addChild(child1);
+            parent.addChild(child2);
+
+            em.persist(parent);
+            //em.persist(child1);
+            //em.persist(child2);
+
+            // 고아 객체 실험을 위한 persist 호출
+            em.persist(child1);
+            em.persist(child2);
+
+            // 위와 같이 코드를 작성해야 3가지 객체 모두 영속성 컨텍스트에 담을 수 있다.(그런데 뭔가 귀찮음)
+            // 지금 parent 중심으로 코드를 작성하는 중이라면 persist 를 3번 하는게 아니라 코드를 짤 때 parent 를 중심으로 하고 싶다.
+            // parent 가 child 를 관리하면서 parent 를 persist 할 때 child 도 같이 자동으로 persist 되도록 만들고 싶다면?
+            // 이럴때 사용하는게 바로 CASCADE 이다.
+            // Parent 클래스(대상 클래스)에서 cascade 속성을 all 로 설정해주자.
+
+            // 고아 객체
+            em.flush();
+            em.clear();
+
+
+
+            Parent findParent = em.find(Parent.class, parent.getId());
+            //findParent.getChildList().remove(0); // List 컬렉션에서 데이터를 삭제하면서 연관관계 단절
+            em.remove(findParent);
             tx.commit(); // 커밋하는 시점에 진짜 데이터베이스에 쿼리가 전달된다.
         } catch (Exception e){
             tx.rollback();
