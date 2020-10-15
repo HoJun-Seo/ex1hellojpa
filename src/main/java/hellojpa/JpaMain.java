@@ -25,26 +25,26 @@ public class JpaMain {
 
             printMember(member); // 상황이 바뀌어서 member 만 출력하면 되는 경우? */
 
-            /*
+
             Member member1 = new Member();
             member1.setUsername("member1");
-            em.persist(member1);*/
+            em.persist(member1);
 
             /*
             Member member2 = new Member();
             member2.setUsername("member2");
-            em.persist(member2);
+            em.persist(member2);*/
 
             em.flush();
-            em.clear();*/
+            em.clear();
 
             //Member findMember = em.find(Member.class, member.getId());
-            /*
+
             Member findMember = em.getReference(Member.class, member1.getId()); // getReference 를 통해 프록시 객체 생성
             System.out.println("findMember = " + findMember.getClass()); // 프록시 객체임을 알려주는 출력문
             System.out.println("findMember.id = " + findMember.getId()); // 이미 가지고 있는 데이터 이므로 SQL 이 출력되지 않는다.
             System.out.println("findMember = " + findMember.getUsername());
-            // 프록시 객체를 통해 실제 클래스의 Entity 를 참조하여 데이터를 가져온다.*/
+            // 프록시 객체를 통해 실제 클래스의 Entity 를 참조하여 데이터를 가져온다.
 
             /* == 비교, instance of 비교
             Member m1 = em.find(Member.class, member1.getId());
@@ -142,6 +142,7 @@ public class JpaMain {
             //                    .getResultList();
 
 
+            /*
             Child child1 = new Child();
             Child child2 = new Child();
 
@@ -172,6 +173,8 @@ public class JpaMain {
             Parent findParent = em.find(Parent.class, parent.getId());
             //findParent.getChildList().remove(0); // List 컬렉션에서 데이터를 삭제하면서 연관관계 단절
             em.remove(findParent);
+            */
+
             tx.commit(); // 커밋하는 시점에 진짜 데이터베이스에 쿼리가 전달된다.
         } catch (Exception e){
             tx.rollback();
