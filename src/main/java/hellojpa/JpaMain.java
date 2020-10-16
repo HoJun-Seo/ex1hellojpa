@@ -4,6 +4,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import java.util.List;
 
 public class JpaMain {
     public static void main(String[] args) {
@@ -39,11 +40,11 @@ public class JpaMain {
             em.clear();
 
             //Member findMember = em.find(Member.class, member.getId());
-
+            /*
             Member findMember = em.getReference(Member.class, member1.getId()); // getReference 를 통해 프록시 객체 생성
             System.out.println("findMember = " + findMember.getClass()); // 프록시 객체임을 알려주는 출력문
             System.out.println("findMember.id = " + findMember.getId()); // 이미 가지고 있는 데이터 이므로 SQL 이 출력되지 않는다.
-            System.out.println("findMember = " + findMember.getUsername());
+            System.out.println("findMember = " + findMember.getUsername());*/
             // 프록시 객체를 통해 실제 클래스의 Entity 를 참조하여 데이터를 가져온다.
 
             /* == 비교, instance of 비교
@@ -75,26 +76,28 @@ public class JpaMain {
             // JPA 의 매커니즘 상 이미 프록시 객체가 생성되어 있으면 find 메소드를 통해 데이터를 가져와도
             // == 비교에서 true 를 반환해야 하기 때문에 프록시 객체로 생성된다.*/
 
-            /* 준영속 상태가 된 프록시 객체를 초기화 하려고 하는 경우 발생하는 오류
-            Member refMember = em.getReference(Member.class, member1.getId());
-            System.out.println("refMember = " + refMember.getClass());
+             //준영속 상태가 된 프록시 객체를 초기화 하려고 하는 경우 발생하는 오류
 
-            em.detach(refMember);
+            //Member refMember = em.getReference(Member.class, member1.getId());
+            //System.out.println("refMember = " + refMember.getClass());
+
+            //em.detach(refMember);
             //em.close();
 
-            refMember.getUsername();// 프록시 객체가 실제로 사용되면서 초기화 된다.(영속성 컨텍스트를 통해 DB에 쿼리를 전달하게 된다.)
-             */
+            //refMember.getUsername();// 프록시 객체가 실제로 사용되면서 초기화 된다.(영속성 컨텍스트를 통해 DB에 쿼리를 전달하게 된다.)
+
 
             // 프록시 확인을 위한 메소드
             /*
             Member refMember = em.getReference(Member.class, member1.getId());
-            System.out.println("refMember = " + refMember.getClass());
+            System.out.println("refMember = " + refMember.getClass()); */
 
             // EntityManagerFactory 클래스에서 지원하는 메소드이다.
             //refMember.getUsername(); // 프록시 객체 초기화
-            Hibernate.initialize(refMember); // 프록시 강제 초기화
-            System.out.println("isLoaded = " + emf.getPersistenceUnitUtil().isLoaded(refMember));
-             */
+
+            //Hibernate.initialize(refMember); // 프록시 강제 초기화
+            //System.out.println("isLoaded = " + emf.getPersistenceUnitUtil().isLoaded(refMember));
+
 
             // 지연 로딩 및 JPQL N + 1
             // Member - Team 연관관계 에서 Team 객체 참조에 LAZY 속성을 부여함으로서 team 객체를 프록시 객체로 만들어주면
@@ -137,9 +140,9 @@ public class JpaMain {
             //List<Member> members = em.createQuery("select m from Member m", Member.class)
               //      .getResultList();
             
-            // JPQL Pathc Join(LAZY 설정에서 즉시 로딩)
-            // List<Member> members = em.createQuery("select m from Member m join fetch m.team", Member.class)
-            //                    .getResultList();
+            // JPQL fetch Join(LAZY 설정에서 즉시 로딩)
+            List<Member> members = em.createQuery("select m from Member m join fetch m.team", Member.class)
+                               .getResultList();
 
 
             /*
