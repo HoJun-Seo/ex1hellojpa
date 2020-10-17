@@ -3,7 +3,7 @@ package hellojpa;
 import javax.persistence.*;
 
 @Entity
-public class Member extends BaseEntity{
+public class Member{
 
     @Id @GeneratedValue
     @Column(name = "MEMBER_ID")
@@ -12,11 +12,17 @@ public class Member extends BaseEntity{
     @Column(name = "USERNAME")
     private String username;
 
-    @ManyToOne (fetch = FetchType.LAZY) // Team 클래스의 데이터를 프록시 객체로 조회하게 하는 속성
-    @JoinColumn
-    private Team team; // 일대다 관계에서 양방향 매핑을 하고 싶은 경우
-    // 양쪽 도메인 모두 연관관계의 주인이 되는 경우를 막기 위해 insertable, updateable 속성을 false 로 지정하여 해당 객체를 읽기 전용으로 선언한다.
+    @Embedded
+    private Period workPeriod;
 
+    @Embedded
+    private Address homeAddress;
+
+    @Embedded
+    @AttributeOverrides({@AttributeOverride(name = "city", column = @Column(name = "WORK_CITY")),
+            @AttributeOverride(name = "street", column = @Column(name = "WORK_STREET")),
+            @AttributeOverride(name = "zipcode", column = @Column(name = "WORK_ZIPCODE"))}) // DB 컬럼 명을 재정의 해준다.
+    private Address workAddress;
 
     public Long getId() {
         return id;
@@ -34,28 +40,19 @@ public class Member extends BaseEntity{
         this.username = username;
     }
 
-    public Team getTeam() {
-        return team;
+    public Period getWorkPeriod() {
+        return workPeriod;
     }
 
-    public void setTeam(Team team) {
-        this.team = team;
+    public void setWorkPeriod(Period workPeriod) {
+        this.workPeriod = workPeriod;
     }
 
-    /*public Long getTeamId() {
-        return teamId;
+    public Address getHomeAddress() {
+        return homeAddress;
     }
 
-    public void setTeamId(Long teamId) {
-        this.teamId = teamId;
-    }*/
-
-    /*@Override
-    public String toString() {
-        return "Member{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", team=" + team +
-                '}';
-    }*/
+    public void setHomeAddress(Address homeAddress) {
+        this.homeAddress = homeAddress;
+    }
 }
