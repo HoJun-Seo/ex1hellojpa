@@ -18,11 +18,11 @@ public class Member{
     @Embedded
     private Address homeAddress;
 
-    @Embedded
+    /*@Embedded
     @AttributeOverrides({@AttributeOverride(name = "city", column = @Column(name = "WORK_CITY")),
             @AttributeOverride(name = "street", column = @Column(name = "WORK_STREET")),
             @AttributeOverride(name = "zipcode", column = @Column(name = "WORK_ZIPCODE"))}) // DB 컬럼 명을 재정의 해준다.
-    private Address workAddress;
+    private Address workAddress;*/
 
     public Long getId() {
         return id;

@@ -19,14 +19,43 @@ public class JpaMain {
         tx.begin(); // 데이터베이스 트랜잭션 시작
         try{ // 오류가 발생했을 때를 대비하기 위해 try - catch 문을 사용한다.
 
-            Member member = new Member();
+            // 임베디드 타입
+            /*Member member = new Member();
             member.setUsername("hello");
             member.setHomeAddress(new Address("city", "street", "10000"));
             member.setWorkPeriod(new Period());
 
+            em.persist(member);*/
+
+            // 값 타입과 불변객체
+            Address address = new Address("city", "street", "10000");
+            // member1 과 member2 가 같은 address 를 사용하고 있다.
+            Member member = new Member();
+            member.setUsername("member1");
+            member.setHomeAddress(address);
+            member.setWorkPeriod(new Period());
             em.persist(member);
 
-            tx.commit(); // 커밋하는 시점에 진짜 데이터베이스에 쿼리가 전달된다.
+            // 임베디드 타입 객체 address 값 복사
+            /*
+            Address copyAddress = new Address(address.getCity(), address.getStreet(), address.getZipcode());
+
+            Member member2 = new Member();
+            member2.setUsername("member2");
+            member2.setHomeAddress(copyAddress); // 복사한 객체를 사용한다.
+            member2.setWorkPeriod(new Period());
+            em.persist(member2);
+
+            // member2 에 복사한 객체를 사용하면 member1 의 임베디드 타입 값을 변경해도 member2 의 값은 변경되지 않는다.(공유되지 않기 때문)
+            member.getHomeAddress().setCity("newCity"); // member1 의 주소만 newCity 로 바꾸고 싶은 경우
+             */
+            
+            // Setter 메소드가 생성되지 않아 Address 클래스가 불변 객체로 만들어진 경우, 값을 변경하는 법
+            Address newAddress = new Address("NewCity", address.getStreet(), address.getZipcode());
+            member.setHomeAddress(newAddress);
+            em.persist(member);
+
+           tx.commit(); // 커밋하는 시점에 진짜 데이터베이스에 쿼리가 전달된다.
         } catch (Exception e){
             tx.rollback();
             e.printStackTrace();
