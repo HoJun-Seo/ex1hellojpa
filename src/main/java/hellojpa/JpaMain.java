@@ -104,12 +104,18 @@ public class JpaMain {
             findMember.getFavoriteFood().add("한식");
             // 아예 통째로 삭제하고 다시 넣어야 한다.(String 자체가 값 타입이기 때문에 아예 통째로 갈아끼워야 한다.)
 
-            // 주소를 바꿔보자. old1 -> new1
-            findMember.getAddressHistory().remove(new AddressEntity("old1", "street", "10000")); // 통째로 갈아끼운다.
+
+            // 주소를 바꿔보자. old1 -> new1 (값 타입 컬렉션을 사용할 경우 -> 이마저도 제대로된 수정이 되지 않는다.)
+            //findMember.getAddressHistory().remove(new AddressEntity("old1", "street", "10000")); // 통째로 갈아끼운다.
             // remove 에서 삭제하는 객체를 찾을 때 내부적으로 equals 메소드로 동작하기 때문에
             // Address 도메인 클래스 자체에 equals, hashCode 메소드를 오버라이드 해서 넣어주어야 한다.(아니면 망함)
             // 두 메소드가 제대로 들어가 있지 않으면 값이 지워지질 않는다.(컬렉션을 다룰 때 의미가 있다.)
-            findMember.getAddressHistory().add(new AddressEntity("newCity1", "street", "10000"));
+            //findMember.getAddressHistory().add(new AddressEntity("newCity1", "street", "10000"));
+
+            // AddressEntity 도메인 클래스로 일대다 단방향 매핑으로 컬렉션을 생성할 경우 데이터 수정
+            AddressEntity updateAddress = findMember.getAddressHistory().get(new AddressEntity("old1", "street", "10000").getId());
+            updateAddress.setAddress(new Address("newCity1", "street", "10000"));
+
 
 
             tx.commit(); // 커밋하는 시점에 진짜 데이터베이스에 쿼리가 전달된다.

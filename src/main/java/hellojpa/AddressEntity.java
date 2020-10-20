@@ -11,7 +11,7 @@ import javax.persistence.Table;
 public class AddressEntity {
 
 	@Id @GeneratedValue
-	private Long id;
+	private int id;
 
 	private Address address;
 
@@ -26,11 +26,11 @@ public class AddressEntity {
 		this.address = new Address(city, street, zipcode);
 	}
 
-	public Long getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
