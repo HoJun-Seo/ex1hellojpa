@@ -28,13 +28,14 @@ public class JpaMain {
             em.persist(member);*/
 
             // 값 타입과 불변객체
+            /*
             Address address = new Address("city", "street", "10000");
             // member1 과 member2 가 같은 address 를 사용하고 있다.
             Member member = new Member();
             member.setUsername("member1");
             member.setHomeAddress(address);
             member.setWorkPeriod(new Period());
-            em.persist(member);
+            em.persist(member);*/
 
             // 임베디드 타입 객체 address 값 복사
             /*
@@ -51,11 +52,67 @@ public class JpaMain {
              */
             
             // Setter 메소드가 생성되지 않아 Address 클래스가 불변 객체로 만들어진 경우, 값을 변경하는 법
+            /*
             Address newAddress = new Address("NewCity", address.getStreet(), address.getZipcode());
             member.setHomeAddress(newAddress);
+            em.persist(member);*/
+
+
+            // 값 타입 저장
+            Member member = new Member();
+            member.setUsername("member1");
+            member.setHomeAddress(new Address("homeCity", "street", "10000"));
+
+            member.getFavoriteFood().add("치킨");
+            member.getFavoriteFood().add("족발");
+            member.getFavoriteFood().add("피자");
+
+            //member.getAddressHistory().add(new Address("old1", "street", "10000"));
+            //member.getAddressHistory().add(new Address("old2", "street", "10000"));
+            member.getAddressHistory().add(new AddressEntity("old1", "street", "10000"));
+            member.getAddressHistory().add(new AddressEntity("old2", "street", "10000"));
+
             em.persist(member);
 
-           tx.commit(); // 커밋하는 시점에 진짜 데이터베이스에 쿼리가 전달된다.
+            em.flush();
+            em.clear();
+
+            System.out.println("===============START================");
+            Member findMember = em.find(Member.class, member.getId());
+
+            /* 값 타입 조회 지연 로딩
+            List<Address> addressesHistory = findMember.getAddressHistory();
+            for (Address address : addressesHistory){
+                System.out.println("address = " + address.getCity());
+            }
+
+            Set<String> favoriteFoods = findMember.getFavoriteFood();
+            for (String favoriteFood : favoriteFoods){
+                System.out.println("favoriteFood = " + favoriteFood);
+            }*/
+
+            // 값 타입 데이터 수정
+            //findMember.getHomeAddress().setCity("newCity");
+            // 위와 같이 수정하면 되지 않냐고 생각 할 수 있는데 그러면 안된다.
+            // 값 타입은 immutable 해야 하기 때문에(공유 참조 문제가 발생하면 안된다.)
+
+            Address a = findMember.getHomeAddress();
+            findMember.setHomeAddress(new Address("newCity", a.getStreet(), a.getZipcode())); // 아예 새로 만들어야 함
+
+            // 치킨 -> 한식 변경
+            findMember.getFavoriteFood().remove("치킨");
+            findMember.getFavoriteFood().add("한식");
+            // 아예 통째로 삭제하고 다시 넣어야 한다.(String 자체가 값 타입이기 때문에 아예 통째로 갈아끼워야 한다.)
+
+            // 주소를 바꿔보자. old1 -> new1
+            findMember.getAddressHistory().remove(new AddressEntity("old1", "street", "10000")); // 통째로 갈아끼운다.
+            // remove 에서 삭제하는 객체를 찾을 때 내부적으로 equals 메소드로 동작하기 때문에
+            // Address 도메인 클래스 자체에 equals, hashCode 메소드를 오버라이드 해서 넣어주어야 한다.(아니면 망함)
+            // 두 메소드가 제대로 들어가 있지 않으면 값이 지워지질 않는다.(컬렉션을 다룰 때 의미가 있다.)
+            findMember.getAddressHistory().add(new AddressEntity("newCity1", "street", "10000"));
+
+
+            tx.commit(); // 커밋하는 시점에 진짜 데이터베이스에 쿼리가 전달된다.
         } catch (Exception e){
             tx.rollback();
             e.printStackTrace();
