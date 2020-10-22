@@ -41,4 +41,5 @@ public class AddressEntity {
 	public void setAddress(Address address) {
 		this.address = address;
 	}
+
 }

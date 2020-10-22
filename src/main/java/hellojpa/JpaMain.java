@@ -96,12 +96,12 @@ public class JpaMain {
             // 위와 같이 수정하면 되지 않냐고 생각 할 수 있는데 그러면 안된다.
             // 값 타입은 immutable 해야 하기 때문에(공유 참조 문제가 발생하면 안된다.)
 
-            Address a = findMember.getHomeAddress();
-            findMember.setHomeAddress(new Address("newCity", a.getStreet(), a.getZipcode())); // 아예 새로 만들어야 함
+            //Address a = findMember.getHomeAddress();
+            //findMember.setHomeAddress(new Address("newCity", a.getStreet(), a.getZipcode())); // 아예 새로 만들어야 함
 
             // 치킨 -> 한식 변경
-            findMember.getFavoriteFood().remove("치킨");
-            findMember.getFavoriteFood().add("한식");
+            //findMember.getFavoriteFood().remove("치킨");
+            //findMember.getFavoriteFood().add("한식");
             // 아예 통째로 삭제하고 다시 넣어야 한다.(String 자체가 값 타입이기 때문에 아예 통째로 갈아끼워야 한다.)
 
 
@@ -114,7 +114,10 @@ public class JpaMain {
 
             // AddressEntity 도메인 클래스로 일대다 단방향 매핑으로 컬렉션을 생성할 경우 데이터 수정
             AddressEntity updateAddress = findMember.getAddressHistory().get(new AddressEntity("old1", "street", "10000").getId());
-            updateAddress.setAddress(new Address("newCity1", "street", "10000"));
+            findMember.getAddressHistory().remove(updateAddress);
+            findMember.getAddressHistory().add(new AddressEntity("newCity1", "street", "10000"));
+            //updateAddress.setAddress(new Address("newCity1", "street", "10000"));
+
 
 
 
