@@ -114,6 +114,9 @@ public class JpaMain {
 
             // AddressEntity 도메인 클래스로 일대다 단방향 매핑으로 컬렉션을 생성할 경우 데이터 수정
             AddressEntity updateAddress = findMember.getAddressHistory().get(new AddressEntity("old1", "street", "10000").getId());
+            //AddressEntity updateAddress = em.find(AddressEntity.class, new AddressEntity("old1", "street", "10000"));
+            // 위와 같이 find 메소드에 Long 타입의 기본 키 가 아닌 일반 객체 데이터(직렬화 구현되어 있지 않음)를 넘겨주겨 되면
+            // 객체의 직렬화와 관련하여 Exception 을 발생시키게 된다.
             findMember.getAddressHistory().remove(updateAddress);
             findMember.getAddressHistory().add(new AddressEntity("newCity1", "street", "10000"));
             //updateAddress.setAddress(new Address("newCity1", "street", "10000"));
